@@ -158,7 +158,7 @@ function renderPricing(connectorName, targetEltId) {
         for (var _i = 0, _a = pricing.plans; _i < _a.length; _i++) {
             var p = _a[_i];
             var isIntPrice = p.monthlyPrice == Math.round(p.monthlyPrice);
-            html += "\n        <div class=\"plan\">\n            <h5 class=\"plan-title\">" + p.name + "</h5>\n            <h6 class=\"plan-price\">$" + (isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)) + " / month</h6>\n            <p class=\"plan-desc\">" + p.description + "</p>\n        </div>";
+            html += "\n        <div class=\"plan\">\n            <div class=\"plan-title\">" + p.name + "</h5>\n            <div class=\"plan-price\">$" + (isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)) + " / month</h6>\n            <p class=\"plan-desc\">" + p.description + "</p>\n        </div>";
         }
         html += "</div>";
     }
