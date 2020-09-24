@@ -178,7 +178,7 @@ function renderPricing(connectorName, targetEltId) {
         var qtyValue = pricing.tiers[0].upperQuantity;
         var sliderValue = PricingHelper.convertQtyValueToSliderValue(qtyValue, pricingVM.tierVMs);
         var cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
-        html += "<div id=\"cost-wrapper\">\n                <div>" + pricing.tierQtyLabel + ":</div>\n                <div>Estimated cost:</div>\n                <div id=\"slidecontainer\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                </div>\n                <div id=\"div-cost\">" + cost.strEstimatedCost + "</div>\n             </div>";
+        html += "<div id=\"cost-wrapper\">\n                <div>" + pricing.tierQtyLabel + ":</div>\n                <div>Estimated cost:</div>\n                <div id=\"slidecontainer\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\" style=\"width: 100%;\">\n                </div>\n                <div id=\"div-cost\">" + cost.strEstimatedCost + "</div>\n             </div>";
     }
     targetElt.innerHTML = html;
     if (pricing.tiers != null) {

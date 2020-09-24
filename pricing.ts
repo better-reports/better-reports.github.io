@@ -302,7 +302,7 @@ function renderPricing(connectorName: string, targetEltId) {
                 <div>${pricing.tierQtyLabel}:</div>
                 <div>Estimated cost:</div>
                 <div id="slidecontainer">
-                  <input id="slider" type="range" min="0" max="${pricingVM.sliderMax}" value="${sliderValue}">
+                  <input id="slider" type="range" min="0" max="${pricingVM.sliderMax}" value="${sliderValue}" style="width: 100%;">
                 </div>
                 <div id="div-cost">${cost.strEstimatedCost}</div>
              </div>`;
