@@ -256,10 +256,10 @@ function renderPricing(connectorName: string, targetEltId) {
       const isIntPrice = p.monthlyPrice == Math.round(p.monthlyPrice);
       html += `
         <div class="plan">
-            <div class="plan-title">${p.name}</h5>
+            <div class="plan-title">${p.name}</div>
             <div class="plan-price">$${
               isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)
-            } / month</h6>
+            } / month</div>
             <p class="plan-desc">${p.description}</p>
         </div>`;
     }
