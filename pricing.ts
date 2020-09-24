@@ -244,7 +244,7 @@ function renderPricing(connectorName: string, targetEltId) {
     return;
   }
 
-  let html = "";
+  let html = `<div class="pricing-wrapper">`;
 
   if (pricing.freeTrialDays != null) {
     html += `<div class="free-trial">${pricing.freeTrialDays}-day free trial</div>`;
@@ -308,6 +308,8 @@ function renderPricing(connectorName: string, targetEltId) {
                 <div id="tier-cost-detail">${cost.strEstimatedCost}</div>
              </div>`;
   }
+
+  html += `</div>`;
 
   targetElt.innerHTML = html;
   if (pricing.tiers != null) {

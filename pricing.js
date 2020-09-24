@@ -149,7 +149,7 @@ function renderPricing(connectorName, targetEltId) {
         console.log("Target element " + targetEltId + " not found");
         return;
     }
-    var html = "";
+    var html = "<div class=\"pricing-wrapper\">";
     if (pricing.freeTrialDays != null) {
         html += "<div class=\"free-trial\">" + pricing.freeTrialDays + "-day free trial</div>";
     }
@@ -181,6 +181,7 @@ function renderPricing(connectorName, targetEltId) {
         var strQtyValue = qtyValue.toLocaleString("en-US");
         html += "<div class=\"tier-cost\">\n                <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                <div class=\"tier-cost-slide-container\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                </div>\n                <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n             </div>";
     }
+    html += "</div>";
     targetElt.innerHTML = html;
     if (pricing.tiers != null) {
         var pricingVM_1 = PricingHelper.comutePricingVM(pricing.tiers);
