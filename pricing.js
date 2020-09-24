@@ -165,11 +165,11 @@ function renderPricing(connectorName, targetEltId) {
     if (pricing.tiers != null) {
         var pricingVM = PricingHelper.comutePricingVM(pricing.tiers);
         html += "<table class=\"tiers\">";
-        html += "<thead>\n                    <tr>\n                        <th>" + pricing.tierQtyLabel + "</th>\n                        <th>" + pricing.unitPriceLabel + "</th>\n                        " + (!pricingVM.hasFlatFees ? "" : "<th>Flat fee</th>") + "\n                    </tr>\n             </thead>";
+        html += "<thead>\n                    <tr class=\"tiers-title-row\">\n                        <th>" + pricing.tierQtyLabel + "</th>\n                        <th>" + pricing.unitPriceLabel + "</th>\n                        " + (!pricingVM.hasFlatFees ? "" : "<th>Flat fee</th>") + "\n                    </tr>\n             </thead>";
         html += "<tbody>";
         for (var _b = 0, _c = pricingVM.tierVMs; _b < _c.length; _b++) {
             var t = _c[_b];
-            html += "<tr>\n                    <td>" + t.strRange + "</td>\n                    <td>" + t.strUnitCost + "</td>\n                    " + (!pricingVM.hasFlatFees
+            html += "<tr class=\"tiers-data-row\">\n                    <td>" + t.strRange + "</td>\n                    <td>" + t.strUnitCost + "</td>\n                    " + (!pricingVM.hasFlatFees
                 ? ""
                 : "<td>" + t.strFlatFee + "</td>") + "\n                </tr>";
         }
@@ -178,16 +178,20 @@ function renderPricing(connectorName, targetEltId) {
         var qtyValue = pricing.tiers[0].upperQuantity;
         var sliderValue = PricingHelper.convertQtyValueToSliderValue(qtyValue, pricingVM.tierVMs);
         var cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
-        html += "<div id=\"cost-wrapper\">\n                <div>" + pricing.tierQtyLabel + ":</div>\n                <div>Estimated cost:</div>\n                <div id=\"slidecontainer\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\" style=\"width: 100%;\">\n                </div>\n                <div id=\"div-cost\">" + cost.strEstimatedCost + "</div>\n             </div>";
+        var strQtyValue = qtyValue.toLocaleString("en-US");
+        html += "<div class=\"tier-cost\">\n                <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                <div class=\"tier-cost-slide-container\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                </div>\n                <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n             </div>";
     }
     targetElt.innerHTML = html;
     if (pricing.tiers != null) {
         var pricingVM_1 = PricingHelper.comutePricingVM(pricing.tiers);
-        var slider_1 = targetElt.querySelector("#slider");
-        var costWrapper_1 = targetElt.querySelector("#div-cost");
-        slider_1.oninput = function () {
-            var qtyValue = PricingHelper.convertSliderValueToQtyValue(parseInt(slider_1.value), pricingVM_1.tierVMs);
-            costWrapper_1.innerHTML = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue).strEstimatedCost;
+        var eltSlider_1 = targetElt.querySelector("#slider");
+        var eltStrQty_1 = (targetElt.querySelector("#tier-cost-qty-value"));
+        var eltTierCostDetail_1 = (targetElt.querySelector("#tier-cost-detail"));
+        eltSlider_1.oninput = function () {
+            var qtyValue = PricingHelper.convertSliderValueToQtyValue(parseInt(eltSlider_1.value), pricingVM_1.tierVMs);
+            var strQtyValue = qtyValue.toLocaleString("en-US");
+            eltTierCostDetail_1.innerHTML = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue).strEstimatedCost;
+            eltStrQty_1.innerHTML = strQtyValue;
         };
     }
 }

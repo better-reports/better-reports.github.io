@@ -270,7 +270,7 @@ function renderPricing(connectorName: string, targetEltId) {
     let pricingVM = PricingHelper.comutePricingVM(pricing.tiers);
     html += `<table class="tiers">`;
     html += `<thead>
-                    <tr>
+                    <tr class="tiers-title-row">
                         <th>${pricing.tierQtyLabel}</th>
                         <th>${pricing.unitPriceLabel}</th>
                         ${!pricingVM.hasFlatFees ? "" : "<th>Flat fee</th>"}
@@ -278,7 +278,7 @@ function renderPricing(connectorName: string, targetEltId) {
              </thead>`;
     html += `<tbody>`;
     for (let t of pricingVM.tierVMs) {
-      html += `<tr>
+      html += `<tr class="tiers-data-row">
                     <td>${t.strRange}</td>
                     <td>${t.strUnitCost}</td>
                     ${
@@ -297,31 +297,39 @@ function renderPricing(connectorName: string, targetEltId) {
       pricingVM.tierVMs
     );
     let cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
+    let strQtyValue = qtyValue.toLocaleString("en-US");
 
-    html += `<div id="cost-wrapper">
-                <div>${pricing.tierQtyLabel}:</div>
-                <div>Estimated cost:</div>
-                <div id="slidecontainer">
-                  <input id="slider" type="range" min="0" max="${pricingVM.sliderMax}" value="${sliderValue}" style="width: 100%;">
+    html += `<div class="tier-cost">
+                <div class="tier-cost-qty"><span id="tier-cost-qty-label">${pricing.tierQtyLabel}</span>: <span id="tier-cost-qty-value">${strQtyValue}</span></div>
+                <div class="tier-cost-estimated-cost">Estimated cost:</div>
+                <div class="tier-cost-slide-container">
+                  <input id="slider" type="range" min="0" max="${pricingVM.sliderMax}" value="${sliderValue}">
                 </div>
-                <div id="div-cost">${cost.strEstimatedCost}</div>
+                <div id="tier-cost-detail">${cost.strEstimatedCost}</div>
              </div>`;
   }
 
   targetElt.innerHTML = html;
   if (pricing.tiers != null) {
     let pricingVM = PricingHelper.comutePricingVM(pricing.tiers);
-    let slider = <HTMLInputElement>targetElt.querySelector("#slider");
-    let costWrapper = <HTMLElement>targetElt.querySelector("#div-cost");
-    slider.oninput = () => {
+    let eltSlider = <HTMLInputElement>targetElt.querySelector("#slider");
+    let eltStrQty = <HTMLInputElement>(
+      targetElt.querySelector("#tier-cost-qty-value")
+    );
+    let eltTierCostDetail = <HTMLElement>(
+      targetElt.querySelector("#tier-cost-detail")
+    );
+    eltSlider.oninput = () => {
       let qtyValue = PricingHelper.convertSliderValueToQtyValue(
-        parseInt(slider.value),
+        parseInt(eltSlider.value),
         pricingVM.tierVMs
       );
-      costWrapper.innerHTML = PricingHelper.computeMeteredPlanCost(
+      let strQtyValue = qtyValue.toLocaleString("en-US");
+      eltTierCostDetail.innerHTML = PricingHelper.computeMeteredPlanCost(
         pricing.tiers,
         qtyValue
       ).strEstimatedCost;
+      eltStrQty.innerHTML = strQtyValue;
     };
   }
 }
