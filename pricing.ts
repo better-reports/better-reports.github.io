@@ -301,10 +301,10 @@ function renderPricing(connectorName: string, targetEltId) {
 
     html += `<div class="tier-cost">
                 <div class="tier-cost-qty"><span id="tier-cost-qty-label">${pricing.tierQtyLabel}</span>: <span id="tier-cost-qty-value">${strQtyValue}</span></div>
-                <div class="tier-cost-estimated-cost">Estimated cost:</div>
                 <div class="tier-cost-slide-container">
-                  <input id="slider" type="range" min="0" max="${pricingVM.sliderMax}" value="${sliderValue}">
+                <input id="slider" type="range" min="0" max="${pricingVM.sliderMax}" value="${sliderValue}">
                 </div>
+                <div class="tier-cost-estimated-cost">Estimated cost:</div>
                 <div id="tier-cost-detail">${cost.strEstimatedCost}</div>
              </div>`;
   }

@@ -179,7 +179,7 @@ function renderPricing(connectorName, targetEltId) {
         var sliderValue = PricingHelper.convertQtyValueToSliderValue(qtyValue, pricingVM.tierVMs);
         var cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
         var strQtyValue = qtyValue.toLocaleString("en-US");
-        html += "<div class=\"tier-cost\">\n                <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                <div class=\"tier-cost-slide-container\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                </div>\n                <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n             </div>";
+        html += "<div class=\"tier-cost\">\n                <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                <div class=\"tier-cost-slide-container\">\n                <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                </div>\n                <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n             </div>";
     }
     html += "</div>";
     targetElt.innerHTML = html;
