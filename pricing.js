@@ -105,7 +105,7 @@ var connectorToPricing = new Map();
 connectorToPricing.set("stripe", {
     freeTrialDays: 14,
     tierQtyLabel: 'Transactions per month',
-    tierQtyLabelExplanationHtml: "Transactions include:\n              <ul class=\"label-explanation-list\">\n                  <li>Payments</li>\n                  <li>Collected <a href=\"https://stripe.com/docs/connect/direct-charges#collecting-fees\">application fees</a> (relevant only if you are a Connect platform)</li>\n                  <li><a href=\"https://stripe.com/docs/issuing/purchases/transactions\">Issuing transactions</a> (relevant only if you issue payment cards)</li>\n              </ul>",
+    tierQtyLabelExplanationHtml: "Transactions include:\n              <ul class=\"label-explanation-list\">\n                  <li>Payments</li>\n                  <li>Collected <a href=\"https://stripe.com/docs/connect/direct-charges#collecting-fees\" target=\"_blank\">application fees</a> (relevant only if you are a Connect platform)</li>\n                  <li><a href=\"https://stripe.com/docs/issuing/purchases/transactions\" target=\"_blank\">Issuing transactions</a> (relevant only if you issue payment cards)</li>\n              </ul>",
     unitPriceLabel: 'Unit price',
     tiers: [
         { flatFee: 29.90, unitCost: 0, upperQuantity: 500, sliderStepSize: 10 },
