@@ -186,6 +186,7 @@ interface ConnectorPricing {
   tiers?: MeteredPlanTier[];
   plans?: Plan[];
   tierQtyLabel?: string;
+  tierQtyLabelExplanationHtml?: string;
   unitPriceLabel?: string;
   tierContactSalesIfAbove?: number;
   freeTrialDays: number;
@@ -195,21 +196,21 @@ const connectorToPricing = new Map<string, ConnectorPricing>();
 
 connectorToPricing.set("stripe", {
   freeTrialDays: 14,
-  tierQtyLabel: "Charges per month",
-  unitPriceLabel: "Unit price",
+  tierQtyLabel: 'Transactions per month',
+  tierQtyLabelExplanationHtml: `Transactions include:
+              <ul class="label-explanation-list">
+                  <li>Payments</li>
+                  <li>Collected <a href="https://stripe.com/docs/connect/direct-charges#collecting-fees">application fees</a> (relevant only if you are a Connect platform)</li>
+                  <li><a href="https://stripe.com/docs/issuing/purchases/transactions">Issuing transactions</a> (relevant only if you issue payment cards)</li>
+              </ul>`,
+  unitPriceLabel: 'Unit price',
   tiers: [
-    { flatFee: 29.9, unitCost: 0, upperQuantity: 500, sliderStepSize: 10 },
-    { flatFee: 0, unitCost: 0.03, upperQuantity: 1_000, sliderStepSize: 10 },
-    { flatFee: 0, unitCost: 0.025, upperQuantity: 5_000, sliderStepSize: 100 },
-    {
-      flatFee: 0,
-      unitCost: 0.02,
-      upperQuantity: null,
-      sliderStepSize: 1_000,
-      sliderMax: 50_000
-    }
+      { flatFee: 29.90, unitCost: 0, upperQuantity: 500, sliderStepSize: 10 },
+      { flatFee: 0, unitCost: 0.03, upperQuantity: 1_000, sliderStepSize: 10 },
+      { flatFee: 0, unitCost: 0.025, upperQuantity: 5_000, sliderStepSize: 100 },
+      { flatFee: 0, unitCost: 0.02, upperQuantity: null, sliderStepSize: 1_000, sliderMax: 50_000 }
   ],
-  tierContactSalesIfAbove: 50000
+  tierContactSalesIfAbove: 50000,
 });
 
 connectorToPricing.set("shopify", {
@@ -265,9 +266,10 @@ function renderPricing(connectorName: string, targetEltId) {
       html += `
         <div class="plan">
             <div class="plan-title">${p.name}</div>
-            <div class="plan-price">$${
-              isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)
-            } / month</div>
+            <div class="plan-price-wrapper">
+              <div class="plan-price">$${isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)}</div>
+              <div class="plan-price-month"> / month</div>
+            </div>
             <p class="plan-desc">${p.description}</p>
         </div>`;
     }
@@ -315,6 +317,11 @@ function renderPricing(connectorName: string, targetEltId) {
                 <div class="tier-cost-estimated-cost">Estimated cost:</div>
                 <div id="tier-cost-detail">${cost.strEstimatedCost}</div>
              </div>`;
+  }
+
+  if (pricing.tierQtyLabelExplanationHtml != null)
+  {
+    html += `<div class="label-explanation">${pricing.tierQtyLabelExplanationHtml}</div>`;
   }
 
   html += `</div>`;

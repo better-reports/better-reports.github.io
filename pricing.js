@@ -104,21 +104,16 @@ var PricingHelper = /** @class */ (function () {
 var connectorToPricing = new Map();
 connectorToPricing.set("stripe", {
     freeTrialDays: 14,
-    tierQtyLabel: "Charges per month",
-    unitPriceLabel: "Unit price",
+    tierQtyLabel: 'Transactions per month',
+    tierQtyLabelExplanationHtml: "Transactions include:\n              <ul class=\"label-explanation-list\">\n                  <li>Payments</li>\n                  <li>Collected <a href=\"https://stripe.com/docs/connect/direct-charges#collecting-fees\">application fees</a> (relevant only if you are a Connect platform)</li>\n                  <li><a href=\"https://stripe.com/docs/issuing/purchases/transactions\">Issuing transactions</a> (relevant only if you issue payment cards)</li>\n              </ul>",
+    unitPriceLabel: 'Unit price',
     tiers: [
-        { flatFee: 29.9, unitCost: 0, upperQuantity: 500, sliderStepSize: 10 },
+        { flatFee: 29.90, unitCost: 0, upperQuantity: 500, sliderStepSize: 10 },
         { flatFee: 0, unitCost: 0.03, upperQuantity: 1000, sliderStepSize: 10 },
         { flatFee: 0, unitCost: 0.025, upperQuantity: 5000, sliderStepSize: 100 },
-        {
-            flatFee: 0,
-            unitCost: 0.02,
-            upperQuantity: null,
-            sliderStepSize: 1000,
-            sliderMax: 50000
-        }
+        { flatFee: 0, unitCost: 0.02, upperQuantity: null, sliderStepSize: 1000, sliderMax: 50000 }
     ],
-    tierContactSalesIfAbove: 50000
+    tierContactSalesIfAbove: 50000,
 });
 connectorToPricing.set("shopify", {
     plans: [
@@ -166,7 +161,7 @@ function renderPricing(connectorName, targetEltId) {
         for (var _i = 0, _a = pricing.plans; _i < _a.length; _i++) {
             var p = _a[_i];
             var isIntPrice = p.monthlyPrice == Math.round(p.monthlyPrice);
-            html += "\n        <div class=\"plan\">\n            <div class=\"plan-title\">" + p.name + "</div>\n            <div class=\"plan-price\">$" + (isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)) + " / month</div>\n            <p class=\"plan-desc\">" + p.description + "</p>\n        </div>";
+            html += "\n        <div class=\"plan\">\n            <div class=\"plan-title\">" + p.name + "</div>\n            <div class=\"plan-price-wrapper\">\n              <div class=\"plan-price\">$" + (isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)) + "</div>\n              <div class=\"plan-price-month\"> / month</div>\n            </div>\n            <p class=\"plan-desc\">" + p.description + "</p>\n        </div>";
         }
         html += "</div>";
     }
@@ -188,6 +183,9 @@ function renderPricing(connectorName, targetEltId) {
         var cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
         var strQtyValue = qtyValue.toLocaleString("en-US");
         html += "<div class=\"tier-cost\">\n                <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                <div class=\"tier-cost-slide-container\">\n                <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                </div>\n                <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n             </div>";
+    }
+    if (pricing.tierQtyLabelExplanationHtml != null) {
+        html += "<div class=\"label-explanation\">" + pricing.tierQtyLabelExplanationHtml + "</div>";
     }
     html += "</div>";
     targetElt.innerHTML = html;
