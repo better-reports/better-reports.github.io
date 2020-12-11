@@ -200,8 +200,8 @@ connectorToPricing.set("stripe", {
   tierQtyLabelExplanationHtml: `Transactions include:
               <ul class="label-explanation-list">
                   <li>Payments</li>
-                  <li>Collected <a href="https://stripe.com/docs/connect/direct-charges#collecting-fees">application fees</a> (relevant only if you are a Connect platform)</li>
-                  <li><a href="https://stripe.com/docs/issuing/purchases/transactions">Issuing transactions</a> (relevant only if you issue payment cards)</li>
+                  <li>Collected <a href="https://stripe.com/docs/connect/direct-charges#collecting-fees" target="_blank">application fees</a> (relevant only if you are a Connect platform)</li>
+                  <li><a href="https://stripe.com/docs/issuing/purchases/transactions" target="_blank">Issuing transactions</a> (relevant only if you issue payment cards)</li>
               </ul>`,
   unitPriceLabel: 'Unit price',
   tiers: [
