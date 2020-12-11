@@ -1,3 +1,5 @@
+//Keep logic here because code is copied in other project:
+//code as plain as possible because copied and paste for betterreports.github.io which powers connector pricing on betterreports.com
 var PricingHelper = /** @class */ (function () {
     function PricingHelper() {
     }
@@ -14,7 +16,10 @@ var PricingHelper = /** @class */ (function () {
                         : t.upperQuantity.toLocaleString("en-US")),
                 strFlatFee: t.flatFee == 0 || t.flatFee == null
                     ? "-"
-                    : "$" + t.flatFee.toLocaleString("en-US"),
+                    : "$" + t.flatFee.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }),
                 strUnitCost: "$" + t.unitCost.toLocaleString("en-US"),
                 minQtyValue: previousTier == null ? 0 : previousTier.maxQtyValue + 1,
                 maxQtyValue: t.upperQuantity,
@@ -64,7 +69,10 @@ var PricingHelper = /** @class */ (function () {
             return "(" + tc.tierQuantity.toLocaleString("en-US") + " x " + tc.tierUnitCost.toLocaleString("en-US") + ")" +
                 (tc.tierFlatFee == null || tc.tierFlatFee == 0
                     ? ""
-                    : " + " + tc.tierFlatFee.toLocaleString("en-US"));
+                    : " + " + tc.tierFlatFee.toLocaleString("en-US", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2
+                    }));
         })
             .join(" + ") +
             (" = $" + totalCost.toLocaleString("en-US", { minimumFractionDigits: 2 }));
