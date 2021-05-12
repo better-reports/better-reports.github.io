@@ -102,6 +102,18 @@ var PricingHelper = /** @class */ (function () {
     return PricingHelper;
 }());
 var connectorToPricing = new Map();
+connectorToPricing.set("quickbooks", {
+    freeTrialDays: 14,
+    tierQtyLabel: 'Transactions per month',
+    unitPriceLabel: 'Unit price',
+    tiers: [
+        { flatFee: 29.90, unitCost: 0, upperQuantity: 100, sliderStepSize: 5 },
+        { flatFee: 0, unitCost: 0.10, upperQuantity: 500, sliderStepSize: 25 },
+        { flatFee: 0, unitCost: 0.08, upperQuantity: 1000, sliderStepSize: 50 },
+        { flatFee: 0, unitCost: 0.06, upperQuantity: null, sliderStepSize: 500, sliderMax: 10000 }
+    ],
+    tierContactSalesIfAbove: 5000,
+});
 connectorToPricing.set("stripe", {
     freeTrialDays: 14,
     tierQtyLabel: 'Transactions per month',

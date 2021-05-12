@@ -1,4 +1,5 @@
-﻿//COPY FROM C:/Dev/BetterReports/NitroCharts.Web2/client-app/src/_model/pricing.helper AND REMOVE THE export KEYWORDS
+﻿//To compile from VS code select Terminal / Run Build Task...
+//COPY FROM C:/Dev/BetterReports/NitroCharts.Web2/client-app/src/_model/pricing.helper AND REMOVE THE export KEYWORDS
 interface TierVM {
   strRange: string;
   strUnitCost: string;
@@ -193,6 +194,20 @@ interface ConnectorPricing {
 }
 
 const connectorToPricing = new Map<string, ConnectorPricing>();
+
+connectorToPricing.set("quickbooks", {
+  freeTrialDays: 14,
+  tierQtyLabel: 'Transactions per month',
+  unitPriceLabel: 'Unit price',
+  tiers: [
+      { flatFee: 29.90, unitCost: 0, upperQuantity: 100, sliderStepSize: 5 },
+      { flatFee: 0, unitCost: 0.10, upperQuantity: 500, sliderStepSize: 25 },
+      { flatFee: 0, unitCost: 0.08, upperQuantity: 1_000, sliderStepSize: 50 },
+      { flatFee: 0, unitCost: 0.06, upperQuantity: null, sliderStepSize: 500, sliderMax: 10_000 }
+  ],
+  tierContactSalesIfAbove: 10_000,
+});
+
 
 connectorToPricing.set("stripe", {
   freeTrialDays: 14,
