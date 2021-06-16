@@ -7,27 +7,16 @@ var PricingHelper = /** @class */ (function () {
         var previousTier = null;
         var tiersVM = tiers.map(function (t) {
             var tierVM = {
-                strRange: (previousTier == null
-                    ? 0
-                    : previousTier.maxQtyValue + 1).toLocaleString("en-US") +
-                    (t.upperQuantity == null ? "+" : " to ") +
-                    (t.upperQuantity == null
-                        ? ""
-                        : t.upperQuantity.toLocaleString("en-US")),
-                strFlatFee: t.flatFee == 0 || t.flatFee == null
-                    ? "-"
-                    : "$" + t.flatFee.toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }),
-                strUnitCost: "$" + t.unitCost.toLocaleString("en-US"),
+                strRange: (previousTier == null ? 0 : previousTier.maxQtyValue + 1).toLocaleString('en-US') +
+                    (t.upperQuantity == null ? '+' : ' to ') +
+                    (t.upperQuantity == null ? '' : t.upperQuantity.toLocaleString('en-US')),
+                strFlatFee: t.flatFee == 0 || t.flatFee == null ? '-' : "$" + t.flatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
+                strUnitCost: t.unitCost == null ? null : "$" + t.unitCost.toLocaleString('en-US'),
                 minQtyValue: previousTier == null ? 0 : previousTier.maxQtyValue + 1,
                 maxQtyValue: t.upperQuantity,
                 sliderStepSize: t.sliderStepSize,
                 minSliderValue: previousTier == null ? 0 : previousTier.maxSliderValue + 1,
-                stepCount: ((t.sliderMax != null ? t.sliderMax : t.upperQuantity) -
-                    (previousTier == null ? 0 : previousTier.maxQtyValue)) /
-                    t.sliderStepSize +
+                stepCount: (((t.sliderMax != null ? t.sliderMax : t.upperQuantity) - (previousTier == null ? 0 : previousTier.maxQtyValue)) / t.sliderStepSize) +
                     (previousTier == null ? 1 : 0),
                 maxSliderValue: null
             };
@@ -37,20 +26,23 @@ var PricingHelper = /** @class */ (function () {
         });
         var sliderMax = tiersVM[tiersVM.length - 1].maxSliderValue;
         var hasFlatFees = tiers.some(function (t) { return t.flatFee != null; });
+        var hasUnitCosts = tiers.some(function (t) { return t.unitCost != null; });
         return {
             tierVMs: tiersVM,
             sliderMax: sliderMax,
-            hasFlatFees: hasFlatFees
+            hasFlatFees: hasFlatFees,
+            hasUnitCosts: hasUnitCosts
         };
     };
     PricingHelper.computeMeteredPlanCost = function (tiers, actualQty) {
+        var _a;
         var totalCost = 0;
         var previousTierUpperQuantity = 0;
         var tierCosts = [];
         for (var _i = 0, tiers_1 = tiers; _i < tiers_1.length; _i++) {
             var tier = tiers_1[_i];
             var tierQty = Math.min(tier.upperQuantity == null ? Number.MAX_VALUE : tier.upperQuantity, actualQty) - previousTierUpperQuantity;
-            var tierVariableCost = tierQty * tier.unitCost;
+            var tierVariableCost = tierQty * ((_a = tier.unitCost) !== null && _a !== void 0 ? _a : 0);
             var tierTotalCost = tierVariableCost + (tier.flatFee == null ? 0 : tier.flatFee);
             totalCost += tierTotalCost;
             previousTierUpperQuantity = tier.upperQuantity;
@@ -59,23 +51,21 @@ var PricingHelper = /** @class */ (function () {
                 tierUnitCost: tier.unitCost,
                 tierTotalVariableCost: tierVariableCost,
                 tierFlatFee: tier.flatFee,
-                tierTotalCost: tierTotalCost
+                tierTotalCost: tierTotalCost,
             });
             if (tier.upperQuantity >= actualQty)
                 break;
         }
         var strEstimatedCost = tierCosts
-            .map(function (tc) {
-            return "(" + tc.tierQuantity.toLocaleString("en-US") + " x " + tc.tierUnitCost.toLocaleString("en-US") + ")" +
-                (tc.tierFlatFee == null || tc.tierFlatFee == 0
-                    ? ""
-                    : " + " + tc.tierFlatFee.toLocaleString("en-US", {
-                        minimumFractionDigits: 2,
-                        maximumFractionDigits: 2
-                    }));
-        })
-            .join(" + ") +
-            (" = $" + totalCost.toLocaleString("en-US", { minimumFractionDigits: 2 }));
+            //cannot use ncMapMany from public site, so inline the implementation
+            .map(function (tc) { return [
+            (tc.tierUnitCost == null ? null : "(" + tc.tierQuantity.toLocaleString('en-US') + " x " + tc.tierUnitCost.toLocaleString('en-US') + ")"),
+            (tc.tierFlatFee == null || tc.tierFlatFee == 0 ? null : "" + tc.tierFlatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+        ]; })
+            .reduce(function (previous, current) { return previous.concat(current); }, [])
+            .filter(function (i) { return i != null; })
+            .join(' + ')
+            + (" = $" + totalCost.toLocaleString('en-US', { minimumFractionDigits: 2 }));
         var res = {
             totalCost: totalCost,
             tierCosts: tierCosts,
@@ -87,16 +77,12 @@ var PricingHelper = /** @class */ (function () {
         sliderValue = Math.round(sliderValue);
         var tier = tiersVM.find(function (t) { return t.maxSliderValue >= sliderValue; });
         var previousTier = tiersVM[tiersVM.indexOf(tier) - 1];
-        var qtyValue = (previousTier == null
-            ? 0
-            : previousTier.maxQtyValue + tier.sliderStepSize) +
-            (sliderValue - tier.minSliderValue) * tier.sliderStepSize;
+        var qtyValue = (previousTier == null ? 0 : previousTier.maxQtyValue + tier.sliderStepSize) + (sliderValue - tier.minSliderValue) * tier.sliderStepSize;
         return qtyValue;
     };
     PricingHelper.convertQtyValueToSliderValue = function (qtyValue, tiersVM) {
         var t = tiersVM.find(function (t) { return t.maxQtyValue >= qtyValue; });
-        var sliderValue = t.minSliderValue +
-            Math.round((qtyValue - t.minQtyValue) / t.sliderStepSize);
+        var sliderValue = t.minSliderValue + Math.round(((qtyValue - t.minQtyValue) / t.sliderStepSize));
         return sliderValue;
     };
     return PricingHelper;
@@ -104,15 +90,22 @@ var PricingHelper = /** @class */ (function () {
 var connectorToPricing = new Map();
 connectorToPricing.set("quickbooks", {
     freeTrialDays: 14,
-    tierQtyLabel: 'Transactions per month',
+    isVolumePricing: true,
+    tierQtyLabel: 'Expenses per month (USD)',
+    tierQtyLabelExplanationHtml: "Pricing depends on your company's average monthly expenses, calculated with the formula below.<br/>Average monthly expenses = Last quarter total expenses (USD) / 3",
     unitPriceLabel: 'Unit price',
     tiers: [
-        { flatFee: 29.90, unitCost: 0, upperQuantity: 100, sliderStepSize: 5 },
-        { flatFee: 0, unitCost: 0.10, upperQuantity: 500, sliderStepSize: 25 },
-        { flatFee: 0, unitCost: 0.08, upperQuantity: 1000, sliderStepSize: 50 },
-        { flatFee: 0, unitCost: 0.06, upperQuantity: null, sliderStepSize: 500, sliderMax: 10000 }
+        { flatFee: 29.90, upperQuantity: 2000 },
+        { flatFee: 49.90, upperQuantity: 5000 },
+        { flatFee: 99.90, upperQuantity: 10000 },
+        { flatFee: 149.90, upperQuantity: 20000 },
+        { flatFee: 249.90, upperQuantity: 50000 },
+        { flatFee: 399.90, upperQuantity: 100000 },
+        { flatFee: 599.90, upperQuantity: 200000 },
+        { flatFee: 799.90, upperQuantity: 500000 },
+        { flatFee: 999.90, upperQuantity: null }
     ],
-    tierContactSalesIfAbove: 5000,
+    tierContactSalesIfAbove: 50000,
 });
 connectorToPricing.set("stripe", {
     freeTrialDays: 14,
@@ -192,21 +185,26 @@ function renderPricing(connectorName, targetEltId) {
     if (pricing.tiers != null) {
         var pricingVM = PricingHelper.comutePricingVM(pricing.tiers);
         html += "<table class=\"tiers\">";
-        html += "<thead>\n                    <tr class=\"tiers-title-row\">\n                        <th>" + pricing.tierQtyLabel + "</th>\n                        <th>" + pricing.unitPriceLabel + "</th>\n                        " + (!pricingVM.hasFlatFees ? "" : "<th>Flat fee</th>") + "\n                    </tr>\n             </thead>";
+        html += "<thead>\n                    <tr class=\"tiers-title-row\">\n                        <th>" + pricing.tierQtyLabel + "</th>\n                        " + (!pricingVM.hasUnitCosts ? "" : "<th>" + pricing.unitPriceLabel + "</th>") + "\n                        " + (!pricingVM.hasFlatFees ? "" : "<th>Flat fee</th>") + "\n                    </tr>\n             </thead>";
         html += "<tbody>";
         for (var _b = 0, _c = pricingVM.tierVMs; _b < _c.length; _b++) {
             var t = _c[_b];
-            html += "<tr class=\"tiers-data-row\">\n                    <td>" + t.strRange + "</td>\n                    <td>" + t.strUnitCost + "</td>\n                    " + (!pricingVM.hasFlatFees
+            html += "<tr class=\"tiers-data-row\">\n                    <td>" + t.strRange + "</td>\n                    " + (!pricingVM.hasUnitCosts
+                ? ""
+                : "<td>" + t.strUnitCost + "</td>") + "\n                    " + (!pricingVM.hasFlatFees
                 ? ""
                 : "<td>" + t.strFlatFee + "</td>") + "\n                </tr>";
         }
         html += "</tbody>";
         html += "</table>";
-        var qtyValue = pricing.tiers[0].upperQuantity;
-        var sliderValue = PricingHelper.convertQtyValueToSliderValue(qtyValue, pricingVM.tierVMs);
-        var cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
-        var strQtyValue = qtyValue.toLocaleString("en-US");
-        html += "<div class=\"tier-cost\">\n                <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                <div class=\"tier-cost-slide-container\">\n                <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                </div>\n                <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n             </div>";
+        var noSlider = !pricingVM.hasUnitCosts && pricing.isVolumePricing;
+        if (!noSlider) {
+            var qtyValue = pricing.tiers[0].upperQuantity;
+            var sliderValue = PricingHelper.convertQtyValueToSliderValue(qtyValue, pricingVM.tierVMs);
+            var cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
+            var strQtyValue = qtyValue.toLocaleString("en-US");
+            html += "<div class=\"tier-cost\">\n                  <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                  <div class=\"tier-cost-slide-container\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                  </div>\n                  <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                  <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n              </div>";
+        }
     }
     if (pricing.tierQtyLabelExplanationHtml != null) {
         html += "<div class=\"label-explanation\">" + pricing.tierQtyLabelExplanationHtml + "</div>";
@@ -216,6 +214,8 @@ function renderPricing(connectorName, targetEltId) {
     if (pricing.tiers != null) {
         var pricingVM_1 = PricingHelper.comutePricingVM(pricing.tiers);
         var eltSlider_1 = targetElt.querySelector("#slider");
+        if (eltSlider_1 == null) // no slider
+            return;
         var eltStrQty_1 = (targetElt.querySelector("#tier-cost-qty-value"));
         var eltTierCostDetail_1 = (targetElt.querySelector("#tier-cost-detail"));
         eltSlider_1.oninput = function () {
