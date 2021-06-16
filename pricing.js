@@ -92,7 +92,7 @@ connectorToPricing.set("quickbooks", {
     freeTrialDays: 14,
     isVolumePricing: true,
     tierQtyLabel: 'Expenses per month (USD)',
-    tierQtyLabelExplanationHtml: "Pricing depends on your company's average monthly expenses, calculated with the formula below.<br/>Average monthly expenses = Last quarter total expenses (USD) / 3",
+    tierQtyLabelExplanationHtml: "Pricing depends on your company's average monthly expenses, calculated with the formula below.<br/>Average monthly expenses = Last quarter total expenses (USD) \u00F7 3",
     unitPriceLabel: 'Unit price',
     tiers: [
         { flatFee: 29.90, upperQuantity: 2000 },
