@@ -121,16 +121,16 @@ class PricingHelper
         }
 
         let strEstimatedCost = tierCosts
-        //cannot use ncMapMany from public site, so inline the implementation
-        .map(tc => [
-            (tc.tierUnitCost == null ? null : `(${tc.tierQuantity.toLocaleString('en-US')} x ${tc.tierUnitCost.toLocaleString('en-US')})`)
-            ,
-            (tc.tierFlatFee == null || tc.tierFlatFee == 0 ? null : `${tc.tierFlatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
-        ])
-        .reduce((previous, current) => previous.concat(current), [])
-        .filter(i => i != null)
-        .join(' + ')
-        + ` = $${totalCost.toLocaleString('en-US', { minimumFractionDigits: 2 })}`;
+            //cannot use ncMapMany from public site, so inline the implementation
+            .map(tc => [
+                (tc.tierUnitCost == null ? null : `(${tc.tierQuantity.toLocaleString('en-US')} x ${tc.tierUnitCost.toLocaleString('en-US')})`)
+                ,
+                (tc.tierFlatFee == null || tc.tierFlatFee == 0 ? null : `${tc.tierFlatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`)
+            ])
+            .reduce((previous, current) => previous.concat(current), [])
+            .filter(i => i != null)
+            .join(' + ')
+            + ` = $${totalCost.toLocaleString('en-US', { minimumFractionDigits: 2 })} / month`;
 
         let res: MeteredPlanCost = {
             totalCost: totalCost,
@@ -297,7 +297,7 @@ function renderPricing(connectorName: string, targetEltId) {
                     <tr class="tiers-title-row">
                         <th>${pricing.tierQtyLabel}</th>
                         ${!pricingVM.hasUnitCosts ? "" : `<th>${pricing.unitPriceLabel}</th>`}
-                        ${!pricingVM.hasFlatFees ? "" : "<th>Flat fee</th>"}
+                        ${!pricingVM.hasFlatFees ? "" : "<th>Monthly flat fee</th>"}
                     </tr>
              </thead>`;
     html += `<tbody>`;
