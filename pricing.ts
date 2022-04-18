@@ -176,22 +176,13 @@ const connectorToPricing = new Map<string, ConnectorPricing>();
 
 connectorToPricing.set("quickbooks", {
   freeTrialDays: 14,
-  isVolumePricing: true,
-  tierQtyLabel: 'Expenses per month (USD)',
-  tierQtyLabelExplanationHtml: `Pricing depends on your company's average monthly expenses, calculated with the formula below.<br/>Average monthly expenses = Last quarter total expenses (USD) ÷ 3`,
-  unitPriceLabel: 'Unit price',
-  tiers: [
-      { flatFee: 29.90, upperQuantity: 2_000 },
-      { flatFee: 49.90, upperQuantity: 5_000 },
-      { flatFee: 99.90, upperQuantity: 10_000 },
-      { flatFee: 149.90, upperQuantity: 20_000 },
-      { flatFee: 249.90, upperQuantity: 50_000 },
-      { flatFee: 399.90, upperQuantity: 100_000 },
-      { flatFee: 599.90, upperQuantity: 200_000},
-      { flatFee: 799.90, upperQuantity: 500_000 },
-      { flatFee: 999.90, upperQuantity: null  }
-  ],
-  tierContactSalesIfAbove: 50000,
+  plans: [
+      {
+          name: 'QuickBooks Connector',
+          description: 'Standard plan with access to all reports and features',
+          monthlyPrice: 19.90
+      }
+  ]
 });
 
 

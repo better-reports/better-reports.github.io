@@ -10,8 +10,8 @@ var PricingHelper = /** @class */ (function () {
                 strRange: (previousTier == null ? 0 : previousTier.maxQtyValue + 1).toLocaleString('en-US') +
                     (t.upperQuantity == null ? '+' : ' to ') +
                     (t.upperQuantity == null ? '' : t.upperQuantity.toLocaleString('en-US')),
-                strFlatFee: t.flatFee == 0 || t.flatFee == null ? '-' : "$" + t.flatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-                strUnitCost: t.unitCost == null ? null : "$" + t.unitCost.toLocaleString('en-US'),
+                strFlatFee: t.flatFee == 0 || t.flatFee == null ? '-' : "$".concat(t.flatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })),
+                strUnitCost: t.unitCost == null ? null : "$".concat(t.unitCost.toLocaleString('en-US')),
                 minQtyValue: previousTier == null ? 0 : previousTier.maxQtyValue + 1,
                 maxQtyValue: t.upperQuantity,
                 sliderStepSize: t.sliderStepSize,
@@ -59,13 +59,13 @@ var PricingHelper = /** @class */ (function () {
         var strEstimatedCost = tierCosts
             //cannot use ncMapMany from public site, so inline the implementation
             .map(function (tc) { return [
-            (tc.tierUnitCost == null ? null : "(" + tc.tierQuantity.toLocaleString('en-US') + " x " + tc.tierUnitCost.toLocaleString('en-US') + ")"),
-            (tc.tierFlatFee == null || tc.tierFlatFee == 0 ? null : "" + tc.tierFlatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }))
+            (tc.tierUnitCost == null ? null : "(".concat(tc.tierQuantity.toLocaleString('en-US'), " x ").concat(tc.tierUnitCost.toLocaleString('en-US'), ")")),
+            (tc.tierFlatFee == null || tc.tierFlatFee == 0 ? null : "".concat(tc.tierFlatFee.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })))
         ]; })
             .reduce(function (previous, current) { return previous.concat(current); }, [])
             .filter(function (i) { return i != null; })
             .join(' + ')
-            + (" = $" + totalCost.toLocaleString('en-US', { minimumFractionDigits: 2 }) + " / month");
+            + " = $".concat(totalCost.toLocaleString('en-US', { minimumFractionDigits: 2 }), " / month");
         var res = {
             totalCost: totalCost,
             tierCosts: tierCosts,
@@ -90,22 +90,13 @@ var PricingHelper = /** @class */ (function () {
 var connectorToPricing = new Map();
 connectorToPricing.set("quickbooks", {
     freeTrialDays: 14,
-    isVolumePricing: true,
-    tierQtyLabel: 'Expenses per month (USD)',
-    tierQtyLabelExplanationHtml: "Pricing depends on your company's average monthly expenses, calculated with the formula below.<br/>Average monthly expenses = Last quarter total expenses (USD) \u00F7 3",
-    unitPriceLabel: 'Unit price',
-    tiers: [
-        { flatFee: 29.90, upperQuantity: 2000 },
-        { flatFee: 49.90, upperQuantity: 5000 },
-        { flatFee: 99.90, upperQuantity: 10000 },
-        { flatFee: 149.90, upperQuantity: 20000 },
-        { flatFee: 249.90, upperQuantity: 50000 },
-        { flatFee: 399.90, upperQuantity: 100000 },
-        { flatFee: 599.90, upperQuantity: 200000 },
-        { flatFee: 799.90, upperQuantity: 500000 },
-        { flatFee: 999.90, upperQuantity: null }
-    ],
-    tierContactSalesIfAbove: 50000,
+    plans: [
+        {
+            name: 'QuickBooks Connector',
+            description: 'Standard plan with access to all reports and features',
+            monthlyPrice: 19.90
+        }
+    ]
 });
 connectorToPricing.set("stripe", {
     freeTrialDays: 14,
@@ -160,40 +151,40 @@ connectorToPricing.set("shopify", {
 function renderPricing(connectorName, targetEltId) {
     var pricing = connectorToPricing.get(connectorName);
     if (pricing == null) {
-        console.log("No pricing found for connector " + connectorName);
+        console.log("No pricing found for connector ".concat(connectorName));
         return;
     }
-    console.log("Found pricing for connector " + connectorName);
+    console.log("Found pricing for connector ".concat(connectorName));
     var targetElt = document.getElementById(targetEltId);
     if (targetElt == null) {
-        console.log("Target element " + targetEltId + " not found");
+        console.log("Target element ".concat(targetEltId, " not found"));
         return;
     }
     var html = "<div class=\"pricing-wrapper\">";
     if (pricing.freeTrialDays != null) {
-        html += "<div class=\"free-trial\">" + pricing.freeTrialDays + "-day free trial</div>";
+        html += "<div class=\"free-trial\">".concat(pricing.freeTrialDays, "-day free trial</div>");
     }
     if (pricing.plans != null) {
         html += "<div class=\"plans\">";
         for (var _i = 0, _a = pricing.plans; _i < _a.length; _i++) {
             var p = _a[_i];
             var isIntPrice = p.monthlyPrice == Math.round(p.monthlyPrice);
-            html += "\n        <div class=\"plan\">\n            <div class=\"plan-title\">" + p.name + "</div>\n            <div class=\"plan-price-wrapper\">\n              <div class=\"plan-price\">$" + (isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2)) + "</div>\n              <div class=\"plan-price-month\"> / month</div>\n            </div>\n            <p class=\"plan-desc\">" + p.description + "</p>\n        </div>";
+            html += "\n        <div class=\"plan\">\n            <div class=\"plan-title\">".concat(p.name, "</div>\n            <div class=\"plan-price-wrapper\">\n              <div class=\"plan-price\">$").concat(isIntPrice ? p.monthlyPrice.toFixed(0) : p.monthlyPrice.toFixed(2), "</div>\n              <div class=\"plan-price-month\"> / month</div>\n            </div>\n            <p class=\"plan-desc\">").concat(p.description, "</p>\n        </div>");
         }
         html += "</div>";
     }
     if (pricing.tiers != null) {
         var pricingVM = PricingHelper.comutePricingVM(pricing.tiers);
         html += "<table class=\"tiers\">";
-        html += "<thead>\n                    <tr class=\"tiers-title-row\">\n                        <th>" + pricing.tierQtyLabel + "</th>\n                        " + (!pricingVM.hasUnitCosts ? "" : "<th>" + pricing.unitPriceLabel + "</th>") + "\n                        " + (!pricingVM.hasFlatFees ? "" : "<th>Monthly flat fee</th>") + "\n                    </tr>\n             </thead>";
+        html += "<thead>\n                    <tr class=\"tiers-title-row\">\n                        <th>".concat(pricing.tierQtyLabel, "</th>\n                        ").concat(!pricingVM.hasUnitCosts ? "" : "<th>".concat(pricing.unitPriceLabel, "</th>"), "\n                        ").concat(!pricingVM.hasFlatFees ? "" : "<th>Monthly flat fee</th>", "\n                    </tr>\n             </thead>");
         html += "<tbody>";
         for (var _b = 0, _c = pricingVM.tierVMs; _b < _c.length; _b++) {
             var t = _c[_b];
-            html += "<tr class=\"tiers-data-row\">\n                    <td>" + t.strRange + "</td>\n                    " + (!pricingVM.hasUnitCosts
+            html += "<tr class=\"tiers-data-row\">\n                    <td>".concat(t.strRange, "</td>\n                    ").concat(!pricingVM.hasUnitCosts
                 ? ""
-                : "<td>" + t.strUnitCost + "</td>") + "\n                    " + (!pricingVM.hasFlatFees
+                : "<td>" + t.strUnitCost + "</td>", "\n                    ").concat(!pricingVM.hasFlatFees
                 ? ""
-                : "<td>" + t.strFlatFee + "</td>") + "\n                </tr>";
+                : "<td>" + t.strFlatFee + "</td>", "\n                </tr>");
         }
         html += "</tbody>";
         html += "</table>";
@@ -203,11 +194,11 @@ function renderPricing(connectorName, targetEltId) {
             var sliderValue = PricingHelper.convertQtyValueToSliderValue(qtyValue, pricingVM.tierVMs);
             var cost = PricingHelper.computeMeteredPlanCost(pricing.tiers, qtyValue);
             var strQtyValue = qtyValue.toLocaleString("en-US");
-            html += "<div class=\"tier-cost\">\n                  <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">" + pricing.tierQtyLabel + "</span>: <span id=\"tier-cost-qty-value\">" + strQtyValue + "</span></div>\n                  <div class=\"tier-cost-slide-container\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"" + pricingVM.sliderMax + "\" value=\"" + sliderValue + "\">\n                  </div>\n                  <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                  <div id=\"tier-cost-detail\">" + cost.strEstimatedCost + "</div>\n              </div>";
+            html += "<div class=\"tier-cost\">\n                  <div class=\"tier-cost-qty\"><span id=\"tier-cost-qty-label\">".concat(pricing.tierQtyLabel, "</span>: <span id=\"tier-cost-qty-value\">").concat(strQtyValue, "</span></div>\n                  <div class=\"tier-cost-slide-container\">\n                  <input id=\"slider\" type=\"range\" min=\"0\" max=\"").concat(pricingVM.sliderMax, "\" value=\"").concat(sliderValue, "\">\n                  </div>\n                  <div class=\"tier-cost-estimated-cost\">Estimated cost:</div>\n                  <div id=\"tier-cost-detail\">").concat(cost.strEstimatedCost, "</div>\n              </div>");
         }
     }
     if (pricing.tierQtyLabelExplanationHtml != null) {
-        html += "<div class=\"label-explanation\">" + pricing.tierQtyLabelExplanationHtml + "</div>";
+        html += "<div class=\"label-explanation\">".concat(pricing.tierQtyLabelExplanationHtml, "</div>");
     }
     html += "</div>";
     targetElt.innerHTML = html;
