@@ -126,23 +126,23 @@ connectorToPricing.set("helpscout", {
 connectorToPricing.set("shopify", {
     plans: [
         {
-            name: "Basic Shopify",
-            description: "For stores currently on the Basic Shopify plan",
+            name: "Basic",
+            description: "For stores currently on the Basic plan",
             monthlyPrice: 19.9
         },
         {
-            name: "Shopify",
-            description: "For stores currently on the Shopify plan",
+            name: "Grow",
+            description: "For stores currently on the Grow plan",
             monthlyPrice: 39.9
         },
         {
-            name: "Advanced Shopify",
-            description: "For stores currently on Advanced Basic Shopify plan",
+            name: "Advanced",
+            description: "For stores currently on Advanced plan",
             monthlyPrice: 149.9
         },
         {
-            name: "Shopify Plus",
-            description: "For stores currently on the Shopify Plus plan",
+            name: "Plus",
+            description: "For stores currently on the Plus plan",
             monthlyPrice: 299.9
         }
     ],
